@@ -1,4 +1,4 @@
-package com.guilhermemagro.mystudies
+package com.guilhermemagro.mystudies.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
