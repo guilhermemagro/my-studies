@@ -2,7 +2,7 @@ package com.guilhermemagro.mystudies.di
 
 import android.content.Context
 import androidx.room.Room
-import com.guilhermemagro.mystudies.data.dao.ItemDao
+import com.guilhermemagro.mystudies.data.dao.StudyItemDao
 import com.guilhermemagro.mystudies.data.database.AppDatabase
 import com.guilhermemagro.mystudies.utils.DATABASE_NAME
 import dagger.Module
@@ -28,7 +28,7 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideItemDao(database: AppDatabase): ItemDao {
-        return database.itemDao()
+    fun provideItemDao(database: AppDatabase): StudyItemDao {
+        return database.studyItemDao()
     }
 }

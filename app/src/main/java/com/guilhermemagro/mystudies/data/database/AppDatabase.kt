@@ -2,10 +2,10 @@ package com.guilhermemagro.mystudies.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.guilhermemagro.mystudies.data.dao.ItemDao
-import com.guilhermemagro.mystudies.data.entities.Item
+import com.guilhermemagro.mystudies.data.dao.StudyItemDao
+import com.guilhermemagro.mystudies.data.entities.StudyItem
 
-@Database(entities = [Item::class], version = 1)
+@Database(entities = [StudyItem::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun itemDao(): ItemDao
+    abstract fun studyItemDao(): StudyItemDao
 }

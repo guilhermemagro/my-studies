@@ -4,8 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "items")
-data class Item(
+@Entity(tableName = "study_items")
+data class StudyItem(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "parent_id") val parentId: Int? = null,
     val title: String,

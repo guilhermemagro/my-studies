@@ -1,32 +1,32 @@
 package com.guilhermemagro.mystudies.data.repositories
 
-import com.guilhermemagro.mystudies.data.dao.ItemDao
-import com.guilhermemagro.mystudies.data.entities.Item
-import com.guilhermemagro.mystudies.data.entities.ItemWithSubItems
+import com.guilhermemagro.mystudies.data.dao.StudyItemDao
+import com.guilhermemagro.mystudies.data.entities.StudyItem
+import com.guilhermemagro.mystudies.data.entities.StudyItemWithSubStudyItems
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 
 class ItemRepositoryImpl @Inject constructor(
-    private val itemDao: ItemDao
+    private val studyItemDao: StudyItemDao
 ) : ItemRepository {
 
-    override fun getAllParentsItems(): Flow<List<Item>> {
-        return itemDao.getAllParentsItems()
+    override fun getAllParentsStudyItems(): Flow<List<StudyItem>> {
+        return studyItemDao.getAllParentsStudyItems()
     }
 
-    override fun getItemWithSubItems(id: Int): List<ItemWithSubItems> {
-        return itemDao.getItemWithSubItems(id)
+    override fun getStudyItemWithSubStudyItems(id: Int): List<StudyItemWithSubStudyItems> {
+        return studyItemDao.getStudyItemWithSubStudyItems(id)
     }
 
-    override suspend fun insert(item: Item) {
-        itemDao.insert(item)
+    override suspend fun insert(studyItem: StudyItem) {
+        studyItemDao.insert(studyItem)
     }
 
-    override suspend fun update(item: Item) {
-        itemDao.update(item)
+    override suspend fun update(studyItem: StudyItem) {
+        studyItemDao.update(studyItem)
     }
 
-    override suspend fun delete(item: Item) {
-        itemDao.delete(item)
+    override suspend fun delete(studyItem: StudyItem) {
+        studyItemDao.delete(studyItem)
     }
 }
