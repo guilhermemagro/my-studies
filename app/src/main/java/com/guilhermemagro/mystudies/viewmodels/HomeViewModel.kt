@@ -20,10 +20,9 @@ class HomeViewModel @Inject constructor(
         return itemRepository.getAllParentsStudyItems().asLiveData()
     }
 
-    fun addStudyItem() {
-        // TODO
+    fun addStudyItem(studyItemTitle: String) {
         viewModelScope.launch {
-            itemRepository.insert(StudyItem(title = "Title test"))
+            itemRepository.insert(StudyItem(title = studyItemTitle))
         }
     }
 }

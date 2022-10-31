@@ -33,7 +33,7 @@ fun AppNavigation(
                 scaffoldState = scaffoldState,
                 studyItems = studyItems,
                 onAddStudyItemDone = {
-                    homeViewModel.addStudyItem()
+                    homeViewModel.addStudyItem(it)
                 }
             )
         }

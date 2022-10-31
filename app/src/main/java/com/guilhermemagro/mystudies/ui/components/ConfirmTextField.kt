@@ -22,7 +22,7 @@ fun ConfirmTextField(
     text: String,
     onValueChange: (String) -> Unit = {},
     onCancelClickListener: () -> Unit = {},
-    onDoneClickListener: () -> Unit = {}
+    onDoneClickListener: (String) -> Unit = {}
 ) {
     var textState by rememberSaveable { mutableStateOf(text) }
 
@@ -42,7 +42,7 @@ fun ConfirmTextField(
                         tint = Color.Red
                     )
                 }
-                IconButton(onClick = onDoneClickListener) {
+                IconButton(onClick = { onDoneClickListener(textState) } ) {
                     Icon(
                         imageVector = Icons.Filled.Check,
                         contentDescription = "Done",
