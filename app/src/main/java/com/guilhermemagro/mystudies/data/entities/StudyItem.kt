@@ -9,6 +9,6 @@ data class StudyItem(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "parent_id") val parentId: Int? = null,
     val title: String,
-    @ColumnInfo(name = "already_read") val alreadyRead: Boolean,
+    @ColumnInfo(name = "already_read") val alreadyRead: Boolean = false,
     val depth: Int = 0,
 )

@@ -3,10 +3,12 @@ package com.guilhermemagro.mystudies.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.guilhermemagro.mystudies.data.entities.StudyItem
 import com.guilhermemagro.mystudies.data.repositories.ItemRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -16,5 +18,12 @@ class HomeViewModel @Inject constructor(
     val studyItems: LiveData<List<StudyItem>>
     get() {
         return itemRepository.getAllParentsStudyItems().asLiveData()
+    }
+
+    fun addStudyItem() {
+        // TODO
+        viewModelScope.launch {
+            itemRepository.insert(StudyItem(title = "Title test"))
+        }
     }
 }

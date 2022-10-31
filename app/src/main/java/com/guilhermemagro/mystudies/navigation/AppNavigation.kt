@@ -29,7 +29,13 @@ fun AppNavigation(
         composable(route = Screen.Home.route) {
             val homeViewModel: HomeViewModel = hiltViewModel()
             val studyItems by homeViewModel.studyItems.observeAsState()
-            HomeScreen(scaffoldState = scaffoldState, studyItems = studyItems)
+            HomeScreen(
+                scaffoldState = scaffoldState,
+                studyItems = studyItems,
+                onAddStudyItemDone = {
+                    homeViewModel.addStudyItem()
+                }
+            )
         }
     }
 }
