@@ -9,11 +9,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 
 @Composable
@@ -22,12 +26,14 @@ fun ConfirmTextField(
     text: String,
     onValueChange: (String) -> Unit = {},
     onCancelClickListener: () -> Unit = {},
-    onDoneClickListener: (String) -> Unit = {}
+    onDoneClickListener: (String) -> Unit = {},
+    autoRequestFocus: Boolean = true
 ) {
     var textState by rememberSaveable { mutableStateOf(text) }
+    val focusRequester = remember { FocusRequester() }
 
     OutlinedTextField(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().focusRequester(focusRequester),
         value = textState,
         onValueChange = {
             textState = it
@@ -52,4 +58,10 @@ fun ConfirmTextField(
             }
         }
     )
+
+    if (autoRequestFocus) {
+        LaunchedEffect(Unit) {
+            focusRequester.requestFocus()
+        }
+    }
 }

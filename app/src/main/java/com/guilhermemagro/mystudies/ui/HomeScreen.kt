@@ -14,14 +14,19 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,13 +45,40 @@ fun HomeScreen(
     studyItems: List<StudyItem>? = null,
     onAddStudyItemDone: (String) -> Unit = {}
 ) {
+    val isOnEditScreenState = remember { mutableStateOf(false) }
+
     Scaffold(
-        scaffoldState = scaffoldState
+        scaffoldState = scaffoldState,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = "MyStudies")
+                },
+                actions = {
+                    if (isOnEditScreenState.value) {
+                        IconButton(onClick = { isOnEditScreenState.value = false }) {
+                            Icon(
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = "Confirm edit"
+                            )
+                        }
+                    } else {
+                        IconButton(onClick = { isOnEditScreenState.value = true }) {
+                            Icon(
+                                imageVector = Icons.Filled.Edit,
+                                contentDescription = "Edit items"
+                            )
+                        }
+                    }
+                }
+            )
+        }
     ) {
         HomeScreenContent(
             scaffoldState = scaffoldState,
             studyItems = studyItems,
-            onAddStudyItemDone = onAddStudyItemDone
+            onAddStudyItemDone = onAddStudyItemDone,
+            isOnEditScreenState = isOnEditScreenState
         )
     }
 }
@@ -55,7 +87,8 @@ fun HomeScreen(
 fun HomeScreenContent(
     scaffoldState: ScaffoldState,
     studyItems: List<StudyItem>? = null,
-    onAddStudyItemDone: (String) -> Unit = {}
+    onAddStudyItemDone: (String) -> Unit = {},
+    isOnEditScreenState: MutableState<Boolean> = remember { mutableStateOf(false) }
 ) {
     val showCreateStudyItemTextField = remember { mutableStateOf(false) }
     val scrollState = rememberLazyListState()
