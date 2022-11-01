@@ -82,7 +82,7 @@ fun HomeScreen(
             scaffoldState = scaffoldState,
             studyItems = studyItems,
             updateStudyItem = homeViewModel::updateStudyItem,
-            onAddStudyItemDone = homeViewModel::addStudyItem,
+            onAddStudyItem = homeViewModel::addStudyItem,
             deleteStudyItem = homeViewModel::deleteStudyItem,
             isOnEditScreenState = isOnEditScreenState
         )
@@ -94,13 +94,21 @@ fun HomeScreenContent(
     scaffoldState: ScaffoldState,
     studyItems: List<StudyItem>? = null,
     updateStudyItem: (StudyItem) -> Unit = {},
-    onAddStudyItemDone: (String) -> Unit = {},
+    onAddStudyItem: (StudyItem) -> Unit = {},
     deleteStudyItem: (StudyItem) -> Unit = {},
     isOnEditScreenState: MutableState<Boolean> = remember { mutableStateOf(false) }
 ) {
     val showCreateStudyItemTextField = remember { mutableStateOf(false) }
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+
+    fun onBlankItemTitle() {
+        coroutineScope.launch {
+            scaffoldState.snackbarHostState.showSnackbar(
+                message = "O item não pode ter título vazio."
+            )
+        }
+    }
 
     // SCREEN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     Column(
@@ -121,6 +129,8 @@ fun HomeScreenContent(
                         isOnEditMode = isOnEditScreenState.value,
                         onCheckedChange = updateStudyItem,
                         onDeleteItem = deleteStudyItem,
+                        onAddStudySubItem = onAddStudyItem,
+                        onBlankItemTitle = ::onBlankItemTitle
                     )
                 }
             } ?: run {
@@ -140,24 +150,20 @@ fun HomeScreenContent(
                 }
             }
 
+            // ADD ITEM REGION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             if (isOnEditScreenState.value) {
                 if (showCreateStudyItemTextField.value) {
                     item {
                         ConfirmTextField(
-                            text = "", onValueChange = {},
                             onCancelClickListener = {
                                 showCreateStudyItemTextField.value = false
                             },
                             onDoneClickListener = {
                                 showCreateStudyItemTextField.value = false
                                 if (it.isNotBlank()) {
-                                    onAddStudyItemDone(it)
+                                    onAddStudyItem(StudyItem(title = it))
                                 } else {
-                                    coroutineScope.launch {
-                                        scaffoldState.snackbarHostState.showSnackbar(
-                                            message = "O item não pode ter título vazio."
-                                        )
-                                    }
+                                    onBlankItemTitle()
                                 }
                             },
                         )

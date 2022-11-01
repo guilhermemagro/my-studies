@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun ConfirmTextField(
     modifier: Modifier = Modifier,
-    text: String,
+    text: String = "",
     onValueChange: (String) -> Unit = {},
     onCancelClickListener: () -> Unit = {},
     onDoneClickListener: (String) -> Unit = {},
