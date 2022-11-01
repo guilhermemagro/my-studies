@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.guilhermemagro.mystudies.ui.home.HomeScreen
+import com.guilhermemagro.mystudies.ui.screens.home.HomeScreen
 
 @Composable
 fun AppNavigation(

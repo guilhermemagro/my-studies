@@ -1,4 +1,4 @@
-package com.guilhermemagro.mystudies.ui.home
+package com.guilhermemagro.mystudies.ui.screens.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
