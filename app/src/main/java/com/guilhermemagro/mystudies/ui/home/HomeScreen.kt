@@ -1,4 +1,4 @@
-package com.guilhermemagro.mystudies.ui
+package com.guilhermemagro.mystudies.ui.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +27,8 @@ import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -35,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.guilhermemagro.mystudies.data.entities.StudyItem
 import com.guilhermemagro.mystudies.ui.components.ConfirmTextField
 import com.guilhermemagro.mystudies.ui.components.StudyItemView
@@ -43,11 +46,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     scaffoldState: ScaffoldState,
-    studyItems: List<StudyItem>? = null,
-    updateStudyItem: (StudyItem) -> Unit = {},
-    onAddStudyItemDone: (String) -> Unit = {},
-    deleteStudyItem: (StudyItem) -> Unit = {}
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
+    val studyItems by homeViewModel.studyItems.observeAsState()
     val isOnEditScreenState = remember { mutableStateOf(false) }
 
     Scaffold(
@@ -80,9 +81,9 @@ fun HomeScreen(
         HomeScreenContent(
             scaffoldState = scaffoldState,
             studyItems = studyItems,
-            updateStudyItem = updateStudyItem,
-            onAddStudyItemDone = onAddStudyItemDone,
-            deleteStudyItem = deleteStudyItem,
+            updateStudyItem = homeViewModel::updateStudyItem,
+            onAddStudyItemDone = homeViewModel::addStudyItem,
+            deleteStudyItem = homeViewModel::deleteStudyItem,
             isOnEditScreenState = isOnEditScreenState
         )
     }

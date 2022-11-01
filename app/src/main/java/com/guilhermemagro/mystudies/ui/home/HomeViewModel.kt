@@ -1,4 +1,4 @@
-package com.guilhermemagro.mystudies.viewmodels
+package com.guilhermemagro.mystudies.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
