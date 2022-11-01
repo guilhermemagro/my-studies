@@ -45,7 +45,8 @@ fun HomeScreen(
     scaffoldState: ScaffoldState,
     studyItems: List<StudyItem>? = null,
     updateStudyItem: (StudyItem) -> Unit = {},
-    onAddStudyItemDone: (String) -> Unit = {}
+    onAddStudyItemDone: (String) -> Unit = {},
+    deleteStudyItem: (StudyItem) -> Unit = {}
 ) {
     val isOnEditScreenState = remember { mutableStateOf(false) }
 
@@ -81,6 +82,7 @@ fun HomeScreen(
             studyItems = studyItems,
             updateStudyItem = updateStudyItem,
             onAddStudyItemDone = onAddStudyItemDone,
+            deleteStudyItem = deleteStudyItem,
             isOnEditScreenState = isOnEditScreenState
         )
     }
@@ -92,6 +94,7 @@ fun HomeScreenContent(
     studyItems: List<StudyItem>? = null,
     updateStudyItem: (StudyItem) -> Unit = {},
     onAddStudyItemDone: (String) -> Unit = {},
+    deleteStudyItem: (StudyItem) -> Unit = {},
     isOnEditScreenState: MutableState<Boolean> = remember { mutableStateOf(false) }
 ) {
     val showCreateStudyItemTextField = remember { mutableStateOf(false) }
@@ -114,7 +117,9 @@ fun HomeScreenContent(
                 items(studyItems) { studyItem ->
                     StudyItemView(
                         studyItem = studyItem,
-                        onCheckedChange = updateStudyItem
+                        isOnEditMode = isOnEditScreenState.value,
+                        onCheckedChange = updateStudyItem,
+                        onDeleteItem = deleteStudyItem,
                     )
                 }
             } ?: run {
@@ -134,40 +139,42 @@ fun HomeScreenContent(
                 }
             }
 
-            if (showCreateStudyItemTextField.value) {
-                item {
-                    ConfirmTextField(
-                        text = "", onValueChange = {},
-                        onCancelClickListener = {
-                            showCreateStudyItemTextField.value = false
-                        },
-                        onDoneClickListener = {
-                            showCreateStudyItemTextField.value = false
-                            if (it.isNotBlank()) {
-                                onAddStudyItemDone(it)
-                            } else {
-                                coroutineScope.launch {
-                                    scaffoldState.snackbarHostState.showSnackbar(
-                                        message = "O item não pode ter título vazio."
-                                    )
+            if (isOnEditScreenState.value) {
+                if (showCreateStudyItemTextField.value) {
+                    item {
+                        ConfirmTextField(
+                            text = "", onValueChange = {},
+                            onCancelClickListener = {
+                                showCreateStudyItemTextField.value = false
+                            },
+                            onDoneClickListener = {
+                                showCreateStudyItemTextField.value = false
+                                if (it.isNotBlank()) {
+                                    onAddStudyItemDone(it)
+                                } else {
+                                    coroutineScope.launch {
+                                        scaffoldState.snackbarHostState.showSnackbar(
+                                            message = "O item não pode ter título vazio."
+                                        )
+                                    }
                                 }
-                            }
-                        },
-                    )
-                }
-            } else {
-                item {
-                    Button(
-                        onClick = { showCreateStudyItemTextField.value = true },
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = "Adicionar item",
-                            modifier = Modifier.size(ButtonDefaults.IconSize)
+                            },
                         )
-                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                        Text(text = "Adicionar item")
+                    }
+                } else {
+                    item {
+                        Button(
+                            onClick = { showCreateStudyItemTextField.value = true },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Add,
+                                contentDescription = "Adicionar item",
+                                modifier = Modifier.size(ButtonDefaults.IconSize)
+                            )
+                            Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                            Text(text = "Adicionar item")
+                        }
                     }
                 }
             }

@@ -31,4 +31,10 @@ class HomeViewModel @Inject constructor(
             itemRepository.update(studyItem)
         }
     }
+
+    fun deleteStudyItem(studyItem: StudyItem) {
+        viewModelScope.launch {
+            itemRepository.delete(studyItem)
+        }
+    }
 }

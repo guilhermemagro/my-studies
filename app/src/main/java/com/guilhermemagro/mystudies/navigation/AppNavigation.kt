@@ -37,6 +37,9 @@ fun AppNavigation(
                 },
                 onAddStudyItemDone = {
                     homeViewModel.addStudyItem(it)
+                },
+                deleteStudyItem = {
+                    homeViewModel.deleteStudyItem(it)
                 }
             )
         }

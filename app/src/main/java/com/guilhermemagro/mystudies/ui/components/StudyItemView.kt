@@ -5,7 +5,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Checkbox
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,20 +24,36 @@ private const val DEPTH_SPACE = 16
 fun StudyItemView(
     modifier: Modifier = Modifier,
     studyItem: StudyItem,
-    onCheckedChange: (StudyItem) -> Unit = {}
+    isOnEditMode: Boolean = false,
+    onCheckedChange: (StudyItem) -> Unit = {},
+    onDeleteItem: (StudyItem) -> Unit = {}
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Checkbox(
-            checked = studyItem.alreadyRead,
-            onCheckedChange = {
-                onCheckedChange(studyItem.copy(alreadyRead = !studyItem.alreadyRead))
-            }
-        )
+        if (!isOnEditMode) {
+            Checkbox(
+                checked = studyItem.alreadyRead,
+                onCheckedChange = {
+                    onCheckedChange(studyItem.copy(alreadyRead = !studyItem.alreadyRead))
+                }
+            )
+        }
         Spacer(modifier = Modifier.width(studyItem.depth * DEPTH_SPACE.dp))
-        Text(text = studyItem.title)
+        Text(
+            modifier = Modifier.weight(1f),
+            text = studyItem.title,
+            maxLines = 1
+        )
+        if (isOnEditMode) {
+            IconButton(onClick = { onDeleteItem(studyItem) }) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "Delete item"
+                )
+            }
+        }
     }
 }
 
