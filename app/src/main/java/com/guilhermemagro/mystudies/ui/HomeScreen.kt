@@ -37,12 +37,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.guilhermemagro.mystudies.data.entities.StudyItem
 import com.guilhermemagro.mystudies.ui.components.ConfirmTextField
+import com.guilhermemagro.mystudies.ui.components.StudyItemView
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
     scaffoldState: ScaffoldState,
     studyItems: List<StudyItem>? = null,
+    updateStudyItem: (StudyItem) -> Unit = {},
     onAddStudyItemDone: (String) -> Unit = {}
 ) {
     val isOnEditScreenState = remember { mutableStateOf(false) }
@@ -77,6 +79,7 @@ fun HomeScreen(
         HomeScreenContent(
             scaffoldState = scaffoldState,
             studyItems = studyItems,
+            updateStudyItem = updateStudyItem,
             onAddStudyItemDone = onAddStudyItemDone,
             isOnEditScreenState = isOnEditScreenState
         )
@@ -87,6 +90,7 @@ fun HomeScreen(
 fun HomeScreenContent(
     scaffoldState: ScaffoldState,
     studyItems: List<StudyItem>? = null,
+    updateStudyItem: (StudyItem) -> Unit = {},
     onAddStudyItemDone: (String) -> Unit = {},
     isOnEditScreenState: MutableState<Boolean> = remember { mutableStateOf(false) }
 ) {
@@ -102,13 +106,16 @@ fun HomeScreenContent(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(8.dp),
+            contentPadding = PaddingValues(4.dp),
             state = scrollState,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             studyItems?.takeIf { it.isNotEmpty() }?.let { studyItems ->
                 items(studyItems) { studyItem ->
-                    Text(text = studyItem.title)
+                    StudyItemView(
+                        studyItem = studyItem,
+                        onCheckedChange = updateStudyItem
+                    )
                 }
             } ?: run {
                 item {

@@ -32,6 +32,9 @@ fun AppNavigation(
             HomeScreen(
                 scaffoldState = scaffoldState,
                 studyItems = studyItems,
+                updateStudyItem = {
+                    homeViewModel.updateStudyItem(it)
+                },
                 onAddStudyItemDone = {
                     homeViewModel.addStudyItem(it)
                 }

@@ -25,4 +25,10 @@ class HomeViewModel @Inject constructor(
             itemRepository.insert(StudyItem(title = studyItemTitle))
         }
     }
+
+    fun updateStudyItem(studyItem: StudyItem) {
+        viewModelScope.launch {
+            itemRepository.update(studyItem)
+        }
+    }
 }
