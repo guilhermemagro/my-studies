@@ -2,6 +2,7 @@ package com.guilhermemagro.mystudies.ui.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
@@ -56,7 +57,9 @@ fun ConfirmTextField(
                     )
                 }
             }
-        }
+        },
+        keyboardActions = KeyboardActions(onDone = { onDoneClickListener(textState) }),
+        singleLine = true
     )
 
     if (autoRequestFocus) {
