@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ItemRepository {
     fun getAllParentsStudyItems(): Flow<List<StudyItem>>
-    fun getStudyItemWithSubStudyItems(id: Int): List<StudyItemWithSubStudyItems>
+    fun getStudyItemWithSubStudyItems(): Flow<List<StudyItemWithSubStudyItems>>
     suspend fun insert(studyItem: StudyItem)
     suspend fun update(studyItem: StudyItem)
     suspend fun delete(studyItem: StudyItem)

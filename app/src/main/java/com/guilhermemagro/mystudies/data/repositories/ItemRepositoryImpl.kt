@@ -14,8 +14,8 @@ class ItemRepositoryImpl @Inject constructor(
         return studyItemDao.getAllParentsStudyItems()
     }
 
-    override fun getStudyItemWithSubStudyItems(id: Int): List<StudyItemWithSubStudyItems> {
-        return studyItemDao.getStudyItemWithSubStudyItems(id)
+    override fun getStudyItemWithSubStudyItems(): Flow<List<StudyItemWithSubStudyItems>> {
+        return studyItemDao.getStudyItemWithSubStudyItems()
     }
 
     override suspend fun insert(studyItem: StudyItem) {

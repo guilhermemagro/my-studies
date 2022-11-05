@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.guilhermemagro.mystudies.data.entities.StudyItem
+import com.guilhermemagro.mystudies.data.entities.StudyItemWithSubStudyItems
 import com.guilhermemagro.mystudies.data.repositories.ItemRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -18,6 +19,11 @@ class HomeViewModel @Inject constructor(
     val studyItems: LiveData<List<StudyItem>>
     get() {
         return itemRepository.getAllParentsStudyItems().asLiveData()
+    }
+
+    val studyItemsTest: LiveData<List<StudyItemWithSubStudyItems>>
+    get() {
+        return itemRepository.getStudyItemWithSubStudyItems().asLiveData()
     }
 
     fun addStudyItem(studyItem: StudyItem) {

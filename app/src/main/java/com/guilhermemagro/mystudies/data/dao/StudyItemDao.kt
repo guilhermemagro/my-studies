@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StudyItemDao {
-    @Query("SELECT * FROM study_items WHERE depth = 0")
+    @Query("SELECT * FROM study_items")
     fun getAllParentsStudyItems(): Flow<List<StudyItem>>
 
-    @Query("SELECT * FROM study_items WHERE id = :id")
-    fun getStudyItemWithSubStudyItems(id: Int): List<StudyItemWithSubStudyItems>
+    @Query("SELECT * FROM study_items ORDER BY id")
+    fun getStudyItemWithSubStudyItems(): Flow<List<StudyItemWithSubStudyItems>>
 
     @Insert
     suspend fun insert(studyItem: StudyItem)

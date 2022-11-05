@@ -1,5 +1,6 @@
 package com.guilhermemagro.mystudies.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,12 +12,14 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
@@ -29,16 +32,25 @@ fun StudyItemView(
     modifier: Modifier = Modifier,
     studyItem: StudyItem,
     isOnEditMode: Boolean = false,
+    isExpanded: Boolean = false,
+    hasChild: Boolean = false,
     onCheckedChange: (StudyItem) -> Unit = {},
     onDeleteItem: (StudyItem) -> Unit = {},
     onAddStudySubItem: (StudyItem) -> Unit = {},
     onBlankItemTitle: () -> Unit = {},
+    onExpand: (StudyItem) -> Unit = {},
 ) {
     val isOnAddSubItemState = remember { mutableStateOf(false) }
 
     Column() {
         Row(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier
+                .fillMaxWidth()
+                .clickable {
+                    if (hasChild) {
+                        onExpand(studyItem)
+                    }
+                },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Spacer(modifier = Modifier.width(studyItem.depth * DEPTH_SPACE.dp))
@@ -62,6 +74,17 @@ fun StudyItemView(
                 text = studyItem.title,
                 maxLines = 1
             )
+            if (hasChild) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowDropDown,
+                    contentDescription = null,
+                    modifier = if (isExpanded) {
+                        Modifier.rotate(180f)
+                    } else {
+                        Modifier
+                    }
+                )
+            }
             if (isOnEditMode) {
                 IconButton(onClick = { onDeleteItem(studyItem) }) {
                     Icon(

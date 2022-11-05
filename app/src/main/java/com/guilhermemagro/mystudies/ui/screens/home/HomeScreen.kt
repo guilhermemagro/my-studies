@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,6 +40,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.guilhermemagro.mystudies.data.entities.StudyItem
+import com.guilhermemagro.mystudies.data.entities.StudyItemWithSubStudyItems
+import com.guilhermemagro.mystudies.extensions.addOrRemoveIfExist
 import com.guilhermemagro.mystudies.ui.components.ConfirmTextField
 import com.guilhermemagro.mystudies.ui.components.StudyItemView
 import kotlinx.coroutines.launch
@@ -49,6 +52,7 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val studyItems by homeViewModel.studyItems.observeAsState()
+    val studyItemsTest by homeViewModel.studyItemsTest.observeAsState()
     val isOnEditScreenState = remember { mutableStateOf(false) }
 
     Scaffold(
@@ -81,6 +85,7 @@ fun HomeScreen(
         HomeScreenContent(
             scaffoldState = scaffoldState,
             studyItems = studyItems,
+            studyItemsTest = studyItemsTest,
             updateStudyItem = homeViewModel::updateStudyItem,
             onAddStudyItem = homeViewModel::addStudyItem,
             deleteStudyItem = homeViewModel::deleteStudyItem,
@@ -93,6 +98,7 @@ fun HomeScreen(
 fun HomeScreenContent(
     scaffoldState: ScaffoldState,
     studyItems: List<StudyItem>? = null,
+    studyItemsTest: List<StudyItemWithSubStudyItems>? = null,
     updateStudyItem: (StudyItem) -> Unit = {},
     onAddStudyItem: (StudyItem) -> Unit = {},
     deleteStudyItem: (StudyItem) -> Unit = {},
@@ -101,6 +107,9 @@ fun HomeScreenContent(
     val showCreateStudyItemTextField = remember { mutableStateOf(false) }
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val childrenToBeShown = remember { mutableStateListOf<Int>() }
+    val studyItemsByParent = studyItems?.groupBy { it.parentId }
+
 
     fun onBlankItemTitle() {
         coroutineScope.launch {
@@ -122,15 +131,20 @@ fun HomeScreenContent(
             state = scrollState,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            studyItems?.takeIf { it.isNotEmpty() }?.let { studyItems ->
+            studyItemsByParent?.get(null)?.takeIf { it.isNotEmpty() }?.let { studyItems ->
                 items(studyItems) { studyItem ->
                     StudyItemView(
                         studyItem = studyItem,
                         isOnEditMode = isOnEditScreenState.value,
+                        isExpanded = childrenToBeShown.contains(studyItem.id),
+                        hasChild = studyItemsByParent.contains(studyItem.id),
                         onCheckedChange = updateStudyItem,
                         onDeleteItem = deleteStudyItem,
                         onAddStudySubItem = onAddStudyItem,
-                        onBlankItemTitle = ::onBlankItemTitle
+                        onBlankItemTitle = ::onBlankItemTitle,
+                        onExpand = {
+                            childrenToBeShown.addOrRemoveIfExist(studyItem.id)
+                        }
                     )
                 }
             } ?: run {
@@ -183,6 +197,9 @@ fun HomeScreenContent(
                             Text(text = "Adicionar item")
                         }
                     }
+                }
+                item {
+                    Text(text = studyItemsTest.toString())
                 }
             }
         }
