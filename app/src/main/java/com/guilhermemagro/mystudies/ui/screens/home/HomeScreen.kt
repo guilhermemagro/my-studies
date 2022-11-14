@@ -108,8 +108,6 @@ fun HomeScreenContent(
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val childrenToBeShown = remember { mutableStateListOf<Int>() }
-    val studyItemsByParent = studyItems?.groupBy { it.parentId }
-
 
     fun onBlankItemTitle() {
         coroutineScope.launch {
@@ -131,13 +129,13 @@ fun HomeScreenContent(
             state = scrollState,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            studyItemsByParent?.get(null)?.takeIf { it.isNotEmpty() }?.let { studyItems ->
+            studyItems?.takeIf { it.isNotEmpty() }?.let { studyItems ->
                 items(studyItems) { studyItem ->
                     StudyItemView(
                         studyItem = studyItem,
                         isOnEditMode = isOnEditScreenState.value,
                         isExpanded = childrenToBeShown.contains(studyItem.id),
-                        hasChild = studyItemsByParent.contains(studyItem.id),
+                        hasChild = studyItems.any { it.parentId == studyItem.id },
                         onCheckedChange = updateStudyItem,
                         onDeleteItem = deleteStudyItem,
                         onAddStudySubItem = onAddStudyItem,
