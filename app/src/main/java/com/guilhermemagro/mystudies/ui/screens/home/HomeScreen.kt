@@ -52,7 +52,6 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val studyItems by homeViewModel.studyItems.observeAsState()
-    val studyItemsTest by homeViewModel.studyItemsTest.observeAsState()
     val isOnEditScreenState = remember { mutableStateOf(false) }
 
     Scaffold(
@@ -85,7 +84,6 @@ fun HomeScreen(
         HomeScreenContent(
             scaffoldState = scaffoldState,
             studyItems = studyItems,
-            studyItemsTest = studyItemsTest,
             updateStudyItem = homeViewModel::updateStudyItem,
             onAddStudyItem = homeViewModel::addStudyItem,
             deleteStudyItem = homeViewModel::deleteStudyItem,
@@ -98,7 +96,6 @@ fun HomeScreen(
 fun HomeScreenContent(
     scaffoldState: ScaffoldState,
     studyItems: List<StudyItem>? = null,
-    studyItemsTest: List<StudyItemWithSubStudyItems>? = null,
     updateStudyItem: (StudyItem) -> Unit = {},
     onAddStudyItem: (StudyItem) -> Unit = {},
     deleteStudyItem: (StudyItem) -> Unit = {},
@@ -130,7 +127,10 @@ fun HomeScreenContent(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             studyItems?.takeIf { it.isNotEmpty() }?.let { studyItems ->
-                items(studyItems) { studyItem ->
+                val filteredItems = studyItems.filter {
+                    it.parentId == null || childrenToBeShown.contains(it.parentId)
+                }
+                items(filteredItems) { studyItem ->
                     StudyItemView(
                         studyItem = studyItem,
                         isOnEditMode = isOnEditScreenState.value,
@@ -195,9 +195,6 @@ fun HomeScreenContent(
                             Text(text = "Adicionar item")
                         }
                     }
-                }
-                item {
-                    Text(text = studyItemsTest.toString())
                 }
             }
         }
