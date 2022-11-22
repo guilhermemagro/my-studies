@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "457794ff5d30900e83394bb1f640536a",
+    "identityHash": "8c0fddb0a3e7179f46e6f63b4b7cf270",
     "entities": [
       {
         "tableName": "study_items",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parent_id` INTEGER, `title` TEXT NOT NULL, `already_read` INTEGER NOT NULL, `depth` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parent_id` INTEGER NOT NULL, `parent_id_path` TEXT NOT NULL, `title` TEXT NOT NULL, `already_read` INTEGER NOT NULL, `depth` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -18,7 +18,13 @@
             "fieldPath": "parentId",
             "columnName": "parent_id",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentIdPath",
+            "columnName": "parent_id_path",
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "title",
@@ -52,7 +58,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '457794ff5d30900e83394bb1f640536a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8c0fddb0a3e7179f46e6f63b4b7cf270')"
     ]
   }
 }

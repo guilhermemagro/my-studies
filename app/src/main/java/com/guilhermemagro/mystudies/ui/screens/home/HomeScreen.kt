@@ -40,10 +40,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.guilhermemagro.mystudies.data.entities.StudyItem
-import com.guilhermemagro.mystudies.data.entities.StudyItemWithSubStudyItems
 import com.guilhermemagro.mystudies.extensions.addOrRemoveIfExist
 import com.guilhermemagro.mystudies.ui.components.ConfirmTextField
 import com.guilhermemagro.mystudies.ui.components.StudyItemView
+import com.guilhermemagro.mystudies.utils.ROOT_PARENT_ID
 import kotlinx.coroutines.launch
 
 @Composable
@@ -104,7 +104,7 @@ fun HomeScreenContent(
     val showCreateStudyItemTextField = remember { mutableStateOf(false) }
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    val childrenToBeShown = remember { mutableStateListOf<Int>() }
+    val childrenToBeShown = remember { mutableStateListOf(ROOT_PARENT_ID) }
 
     fun onBlankItemTitle() {
         coroutineScope.launch {
@@ -128,7 +128,7 @@ fun HomeScreenContent(
         ) {
             studyItems?.takeIf { it.isNotEmpty() }?.let { studyItems ->
                 val filteredItems = studyItems.filter {
-                    it.parentId == null || childrenToBeShown.contains(it.parentId)
+                    childrenToBeShown.contains(it.parentId)
                 }
                 items(filteredItems) { studyItem ->
                     StudyItemView(

@@ -12,6 +12,7 @@
 - [Doc: Compose and other libraries](https://developer.android.com/jetpack/compose/libraries)
 - [Stackoverflow: Request Focus on TextField in jetpack compose](https://stackoverflow.com/a/66391682/11407290)
 
+
 ### To study:
 * https://github.com/bmelnychuk/AndroidTreeView
 - https://gist.github.com/antonshilov/ef8cd0a360a5cc0f823b2a4e85084720
@@ -21,3 +22,6 @@
 - http://androidcodesnips.blogspot.com/2011/09/three-level-expandable-list.html
 - https://code.google.com/archive/p/tree-view-list-android/
 - https://github.com/Polidea/tree-view-list-android
+
+- [Articles: Compose state explained](https://dev.to/zachklipp/a-historical-introduction-to-the-compose-reactive-state-model-19j8)
+- [Doc: State and Jetpack Compose](https://developer.android.com/jetpack/compose/state)
