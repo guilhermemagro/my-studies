@@ -15,8 +15,10 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -24,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.guilhermemagro.mystudies.data.entities.StudyItem
+import com.guilhermemagro.mystudies.utils.PATH_DIVIDER
 
 private const val DEPTH_SPACE = 16
 
@@ -40,9 +43,9 @@ fun StudyItemView(
     onBlankItemTitle: () -> Unit = {},
     onExpand: (StudyItem) -> Unit = {},
 ) {
-    val isOnAddSubItemState = remember { mutableStateOf(false) }
+    var isOnAddSubItemState by remember { mutableStateOf(false) }
 
-    Column() {
+    Column {
         Row(
             modifier = modifier
                 .fillMaxWidth()
@@ -55,7 +58,7 @@ fun StudyItemView(
         ) {
             Spacer(modifier = Modifier.width(studyItem.depth * DEPTH_SPACE.dp))
             if (isOnEditMode) {
-                IconButton(onClick = { isOnAddSubItemState.value = true }) {
+                IconButton(onClick = { isOnAddSubItemState = true }) {
                     Icon(
                         imageVector = Icons.Filled.Add,
                         contentDescription = "Add subitem"
@@ -94,14 +97,15 @@ fun StudyItemView(
                 }
             }
         }
-        if (isOnAddSubItemState.value) {
+        if (isOnAddSubItemState) {
             ConfirmTextField(
-                onCancelClickListener = { isOnAddSubItemState.value = false },
+                onCancelClickListener = { isOnAddSubItemState = false },
                 onDoneClickListener = {
-                    isOnAddSubItemState.value = false
+                    isOnAddSubItemState = false
                     if (it.isNotBlank()) {
                         val newStudySubItem = StudyItem(
                             parentId = studyItem.id,
+                            parentPath = studyItem.parentPath + PATH_DIVIDER + studyItem.id,
                             title = it,
                             depth = studyItem.depth.inc()
                         )

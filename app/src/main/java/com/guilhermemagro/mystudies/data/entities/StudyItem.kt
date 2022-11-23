@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class StudyItem(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "parent_id") val parentId: Int = 0,
-    @ColumnInfo(name = "parent_id_path") val parentIdPath: String = "0",
+    @ColumnInfo(name = "parent_path") val parentPath: String = "0",
     val title: String,
     @ColumnInfo(name = "already_read") val alreadyRead: Boolean = false,
     val depth: Int = 0,
