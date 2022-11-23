@@ -3,6 +3,7 @@ package com.guilhermemagro.mystudies.data.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.guilhermemagro.mystudies.utils.PATH_DIVIDER
 
 @Entity(tableName = "study_items")
 data class StudyItem(
@@ -12,4 +13,6 @@ data class StudyItem(
     val title: String,
     @ColumnInfo(name = "already_read") val alreadyRead: Boolean = false,
     val depth: Int = 0,
-)
+) {
+    fun getPath() = parentPath + PATH_DIVIDER + id
+}

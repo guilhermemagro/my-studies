@@ -33,6 +33,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -43,7 +44,7 @@ import com.guilhermemagro.mystudies.data.entities.StudyItem
 import com.guilhermemagro.mystudies.extensions.addOrRemoveIfExist
 import com.guilhermemagro.mystudies.ui.components.ConfirmTextField
 import com.guilhermemagro.mystudies.ui.components.StudyItemView
-import com.guilhermemagro.mystudies.utils.ROOT_PARENT_ID
+import com.guilhermemagro.mystudies.utils.ROOT_PARENT_PATH
 import kotlinx.coroutines.launch
 
 @Composable
@@ -101,10 +102,10 @@ fun HomeScreenContent(
     deleteStudyItem: (StudyItem) -> Unit = {},
     isOnEditScreenState: MutableState<Boolean> = remember { mutableStateOf(false) }
 ) {
-    val showCreateStudyItemTextField = remember { mutableStateOf(false) }
+    var showCreateStudyItemTextField by remember { mutableStateOf(false) }
+    val parentsExpanded = remember { mutableStateListOf(ROOT_PARENT_PATH) }
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    val childrenToBeShown = remember { mutableStateListOf(ROOT_PARENT_ID) }
 
     fun onBlankItemTitle() {
         coroutineScope.launch {
@@ -128,20 +129,20 @@ fun HomeScreenContent(
         ) {
             studyItems?.takeIf { it.isNotEmpty() }?.let { studyItems ->
                 val filteredItems = studyItems.filter {
-                    childrenToBeShown.contains(it.parentId)
+                    parentsExpanded.contains(it.parentPath)
                 }
                 items(filteredItems) { studyItem ->
                     StudyItemView(
                         studyItem = studyItem,
                         isOnEditMode = isOnEditScreenState.value,
-                        isExpanded = childrenToBeShown.contains(studyItem.id),
+                        isExpanded = parentsExpanded.contains(studyItem.getPath()),
                         hasChild = studyItems.any { it.parentId == studyItem.id },
                         onCheckedChange = updateStudyItem,
                         onDeleteItem = deleteStudyItem,
                         onAddStudySubItem = onAddStudyItem,
                         onBlankItemTitle = ::onBlankItemTitle,
                         onExpand = {
-                            childrenToBeShown.addOrRemoveIfExist(studyItem.id)
+                            parentsExpanded.addOrRemoveIfExist(studyItem.getPath())
                         }
                     )
                 }
@@ -164,14 +165,14 @@ fun HomeScreenContent(
 
             // ADD ITEM REGION <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             if (isOnEditScreenState.value) {
-                if (showCreateStudyItemTextField.value) {
+                if (showCreateStudyItemTextField) {
                     item {
                         ConfirmTextField(
                             onCancelClickListener = {
-                                showCreateStudyItemTextField.value = false
+                                showCreateStudyItemTextField = false
                             },
                             onDoneClickListener = {
-                                showCreateStudyItemTextField.value = false
+                                showCreateStudyItemTextField = false
                                 if (it.isNotBlank()) {
                                     onAddStudyItem(StudyItem(title = it))
                                 } else {
@@ -183,7 +184,7 @@ fun HomeScreenContent(
                 } else {
                     item {
                         Button(
-                            onClick = { showCreateStudyItemTextField.value = true },
+                            onClick = { showCreateStudyItemTextField = true },
                             modifier = Modifier.fillMaxWidth(),
                         ) {
                             Icon(

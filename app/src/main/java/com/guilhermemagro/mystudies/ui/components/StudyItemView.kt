@@ -26,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.times
 import com.guilhermemagro.mystudies.data.entities.StudyItem
-import com.guilhermemagro.mystudies.utils.PATH_DIVIDER
 
 private const val DEPTH_SPACE = 16
 
@@ -105,7 +104,7 @@ fun StudyItemView(
                     if (it.isNotBlank()) {
                         val newStudySubItem = StudyItem(
                             parentId = studyItem.id,
-                            parentPath = studyItem.parentPath + PATH_DIVIDER + studyItem.id,
+                            parentPath = studyItem.getPath(),
                             title = it,
                             depth = studyItem.depth.inc()
                         )
