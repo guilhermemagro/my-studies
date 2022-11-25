@@ -41,6 +41,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.guilhermemagro.mystudies.data.entities.StudyItem
+import com.guilhermemagro.mystudies.extensions.addIfDoesNotContains
 import com.guilhermemagro.mystudies.extensions.addOrRemoveIfExist
 import com.guilhermemagro.mystudies.ui.components.ConfirmTextField
 import com.guilhermemagro.mystudies.ui.components.StudyItemView
@@ -139,7 +140,10 @@ fun HomeScreenContent(
                         hasChild = studyItems.any { it.parentId == studyItem.id },
                         onCheckedChange = updateStudyItem,
                         onDeleteItem = deleteStudyItem,
-                        onAddStudySubItem = onAddStudyItem,
+                        onAddStudySubItem = {
+                            onAddStudyItem(it)
+                            parentsExpanded.addIfDoesNotContains(studyItem.getPath())
+                        },
                         onBlankItemTitle = ::onBlankItemTitle,
                         onExpand = {
                             parentsExpanded.addOrRemoveIfExist(studyItem.getPath())

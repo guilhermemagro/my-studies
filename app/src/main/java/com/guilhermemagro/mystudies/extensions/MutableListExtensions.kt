@@ -7,3 +7,9 @@ fun MutableList<String>.addOrRemoveIfExist(string: String) {
         add(string)
     }
 }
+
+fun MutableList<String>.addIfDoesNotContains(string: String) {
+    if (!contains(string)) {
+        add(string)
+    }
+}
