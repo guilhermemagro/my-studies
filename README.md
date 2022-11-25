@@ -25,3 +25,4 @@
 
 - [Articles: Compose state explained](https://dev.to/zachklipp/a-historical-introduction-to-the-compose-reactive-state-model-19j8)
 - [Doc: State and Jetpack Compose](https://developer.android.com/jetpack/compose/state)
+- [Medium: ViewModels and LiveData: Patterns + AntiPatterns](https://medium.com/androiddevelopers/viewmodels-and-livedata-patterns-antipatterns-21efaef74a54)

@@ -87,7 +87,7 @@ fun HomeScreen(
             studyItems = studyItems,
             updateStudyItem = homeViewModel::updateStudyItem,
             onAddStudyItem = homeViewModel::addStudyItem,
-            deleteStudyItem = homeViewModel::deleteStudyItem,
+            deleteStudyItem = homeViewModel::deleteStudyItemAndItsChildren,
             isOnEditScreenState = isOnEditScreenState
         )
     }

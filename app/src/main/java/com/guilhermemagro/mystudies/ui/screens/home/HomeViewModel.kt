@@ -9,6 +9,7 @@ import com.guilhermemagro.mystudies.data.entities.StudyItemWithSubStudyItems
 import com.guilhermemagro.mystudies.data.repositories.ItemRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @HiltViewModel
@@ -16,14 +17,19 @@ class HomeViewModel @Inject constructor(
     private val itemRepository: ItemRepository
 ) : ViewModel() {
 
-    val studyItems: LiveData<List<StudyItem>>
-    get() {
-        return itemRepository.getAllParentsStudyItems().asLiveData()
-    }
+    private val studyItemsFlow: Flow<List<StudyItem>> = itemRepository.getAllParentsStudyItems()
+    val studyItems: LiveData<List<StudyItem>> = studyItemsFlow.asLiveData()
+    private var lastStudyItems: List<StudyItem>? = null
 
     val studyItemsTest: LiveData<List<StudyItemWithSubStudyItems>>
     get() {
         return itemRepository.getStudyItemWithSubStudyItems().asLiveData()
+    }
+
+    init {
+        viewModelScope.launch {
+            studyItemsFlow.collect { lastStudyItems = it }
+        }
     }
 
     fun addStudyItem(studyItem: StudyItem) {
@@ -38,8 +44,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun deleteStudyItem(studyItem: StudyItem) {
+    fun deleteStudyItemAndItsChildren(studyItem: StudyItem) {
         viewModelScope.launch {
+            lastStudyItems?.forEach { listItem ->
+                if (listItem.isChildOf(studyItem)) {
+                    itemRepository.delete(listItem)
+                }
+            }
             itemRepository.delete(studyItem)
         }
     }
