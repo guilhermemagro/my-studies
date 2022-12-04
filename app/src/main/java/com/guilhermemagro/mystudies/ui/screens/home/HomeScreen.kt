@@ -54,6 +54,7 @@ fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val studyItems by homeViewModel.studyItems.observeAsState()
+    val maxPosition by homeViewModel.maxPosition.observeAsState()
     val isOnEditScreenState = remember { mutableStateOf(false) }
 
     Scaffold(
@@ -86,6 +87,9 @@ fun HomeScreen(
         HomeScreenContent(
             scaffoldState = scaffoldState,
             studyItems = studyItems,
+            maxItemPosition = maxPosition,
+            onMoveUp = homeViewModel::moveItemUp,
+            onMoveDown = homeViewModel::moveItemDown,
             updateStudyItem = homeViewModel::updateStudyItem,
             onAddStudyItem = homeViewModel::addStudyItem,
             deleteStudyItem = homeViewModel::deleteStudyItemAndItsChildren,
@@ -98,6 +102,9 @@ fun HomeScreen(
 fun HomeScreenContent(
     scaffoldState: ScaffoldState,
     studyItems: List<StudyItem>? = null,
+    maxItemPosition: Int? = null,
+    onMoveUp: (StudyItem) -> Unit = {},
+    onMoveDown: (StudyItem) -> Unit = {},
     updateStudyItem: (StudyItem) -> Unit = {},
     onAddStudyItem: (StudyItem) -> Unit = {},
     deleteStudyItem: (StudyItem) -> Unit = {},
@@ -136,6 +143,8 @@ fun HomeScreenContent(
                     StudyItemView(
                         studyItem = studyItem,
                         isOnEditMode = isOnEditScreenState.value,
+                        isOnFirstPosition = studyItem.position == 0,
+                        isOnLastPosition = studyItem.position == maxItemPosition,
                         isExpanded = parentsExpanded.contains(studyItem.getPath()),
                         hasChild = studyItems.any { it.parentId == studyItem.id },
                         onCheckedChange = updateStudyItem,
@@ -147,7 +156,9 @@ fun HomeScreenContent(
                         onBlankItemTitle = ::onBlankItemTitle,
                         onExpand = {
                             parentsExpanded.addOrRemoveIfExist(studyItem.getPath())
-                        }
+                        },
+                        onMoveUp = onMoveUp,
+                        onMoveDown = onMoveDown
                     )
                 }
             } ?: run {

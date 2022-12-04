@@ -21,6 +21,9 @@ class HomeViewModel @Inject constructor(
     val studyItems: LiveData<List<StudyItem>> = studyItemsFlow.asLiveData()
     private var lastStudyItems: List<StudyItem>? = null
 
+    private val maxPositionFlow: Flow<Int?> = itemRepository.getMaxPosition()
+    val maxPosition: LiveData<Int?> = maxPositionFlow.asLiveData()
+
     val studyItemsTest: LiveData<List<StudyItemWithSubStudyItems>>
     get() {
         return itemRepository.getStudyItemWithSubStudyItems().asLiveData()
@@ -34,6 +37,9 @@ class HomeViewModel @Inject constructor(
 
     fun addStudyItem(studyItem: StudyItem) {
         viewModelScope.launch {
+            if (studyItem.depth == 0) {
+                studyItem.position = maxPosition.value?.inc() ?: 0
+            }
             itemRepository.insert(studyItem)
         }
     }
@@ -44,12 +50,47 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun moveItemUp(studyItem: StudyItem) = viewModelScope.launch {
+        lastStudyItems?.let { studyItems ->
+            val studyItemMovedDown = studyItems.find { it.position == studyItem.position.dec() }
+            studyItemMovedDown?.let {
+                moveItemsAndUpdate(studyItemMovedDown, studyItem)
+            }
+        }
+    }
+
+    fun moveItemDown(studyItem: StudyItem) = viewModelScope.launch {
+        lastStudyItems?.let { studyItems ->
+            val studyItemMovedUp = studyItems.find { it.position == studyItem.position.inc() }
+            studyItemMovedUp?.let {
+                moveItemsAndUpdate(studyItem, studyItemMovedUp)
+            }
+        }
+    }
+
+    private suspend fun moveItemsAndUpdate(
+        studyItemMovedDown: StudyItem,
+        studyItemMovedUp: StudyItem
+    ) {
+        studyItemMovedDown.position++
+        studyItemMovedUp.position--
+        itemRepository.update(studyItemMovedDown, studyItemMovedUp)
+    }
+
     fun deleteStudyItemAndItsChildren(studyItem: StudyItem) {
         viewModelScope.launch {
             lastStudyItems?.forEach { listItem ->
                 if (listItem.isChildOf(studyItem)) {
                     itemRepository.delete(listItem)
                 }
+            }
+            lastStudyItems?.let { studyItems ->
+                val itemsToBeUpdated = studyItems.toMutableList()
+                itemsToBeUpdated.filter { it.position > studyItem.position }.map { it.position-- }
+                itemRepository.deleteAndUpdateAll(
+                    studyItemToBeDeleted = studyItem,
+                    studyItemsToBeUpdated = itemsToBeUpdated
+                )
             }
             itemRepository.delete(studyItem)
         }

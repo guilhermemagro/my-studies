@@ -21,8 +21,9 @@ class ItemRepositoryImpl @Inject constructor(
             val itemsByParentId = list.groupBy { it.parentId }
             val resultItemsList = mutableListOf<StudyItem>()
             if (itemsByParentId.containsKey(ROOT_PARENT_ID)) {
-                itemsByParentId[ROOT_PARENT_ID]?.let {
-                    resultItemsList.addAll(it)
+                itemsByParentId[ROOT_PARENT_ID]?.let { rootItems ->
+                    val rootItemsSorted = rootItems.sortedBy { it.position }
+                    resultItemsList.addAll(rootItemsSorted)
                 }
                 itemsByParentId.keys.forEach { parentId ->
                     if (parentId != ROOT_PARENT_ID) {
@@ -45,11 +46,25 @@ class ItemRepositoryImpl @Inject constructor(
         studyItemDao.insert(studyItem)
     }
 
-    override suspend fun update(studyItem: StudyItem) {
-        studyItemDao.update(studyItem)
+    override suspend fun update(vararg studyItem: StudyItem) {
+        studyItemDao.update(*studyItem)
     }
 
     override suspend fun delete(studyItem: StudyItem) {
         studyItemDao.delete(studyItem)
+    }
+
+    override fun getMaxPosition(): Flow<Int?> {
+        return studyItemDao.getMaxPosition()
+    }
+
+    override suspend fun deleteAndUpdateAll(
+        studyItemToBeDeleted: StudyItem,
+        studyItemsToBeUpdated: List<StudyItem>
+    ) {
+        studyItemDao.deleteAndUpdateAll(
+            studyItemToBeDeleted = studyItemToBeDeleted,
+            studyItemsToBeUpdated = studyItemsToBeUpdated
+        )
     }
 }

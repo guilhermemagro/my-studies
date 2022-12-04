@@ -14,6 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +36,8 @@ fun StudyItemView(
     modifier: Modifier = Modifier,
     studyItem: StudyItem,
     isOnEditMode: Boolean = false,
+    isOnFirstPosition: Boolean = false,
+    isOnLastPosition: Boolean = false,
     isExpanded: Boolean = false,
     hasChild: Boolean = false,
     onCheckedChange: (StudyItem) -> Unit = {},
@@ -41,6 +45,8 @@ fun StudyItemView(
     onAddStudySubItem: (StudyItem) -> Unit = {},
     onBlankItemTitle: () -> Unit = {},
     onExpand: (StudyItem) -> Unit = {},
+    onMoveUp: (StudyItem) -> Unit = {},
+    onMoveDown: (StudyItem) -> Unit = {},
 ) {
     var isOnAddSubItemState by remember { mutableStateOf(false) }
 
@@ -88,6 +94,22 @@ fun StudyItemView(
                 )
             }
             if (isOnEditMode) {
+                if (studyItem.depth == 0 && !isOnFirstPosition) {
+                    IconButton(onClick = { onMoveUp(studyItem) } ) {
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowUp,
+                            contentDescription = "Move item up"
+                        )
+                    }
+                }
+                if (studyItem.depth == 0 && !isOnLastPosition) {
+                    IconButton(onClick = { onMoveDown(studyItem) }) {
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowDown,
+                            contentDescription = "Move item down"
+                        )
+                    }
+                }
                 IconButton(onClick = { onDeleteItem(studyItem) }) {
                     Icon(
                         imageVector = Icons.Filled.Delete,

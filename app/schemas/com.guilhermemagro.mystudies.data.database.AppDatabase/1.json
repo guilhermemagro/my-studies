@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "8e332c213018890a239f15ef1ec9834a",
+    "identityHash": "04619801612ab9c3ae08089670c8d37b",
     "entities": [
       {
         "tableName": "study_items",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parent_id` INTEGER NOT NULL, `parent_path` TEXT NOT NULL, `title` TEXT NOT NULL, `already_read` INTEGER NOT NULL, `depth` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `parent_id` INTEGER NOT NULL, `parent_path` TEXT NOT NULL, `title` TEXT NOT NULL, `already_read` INTEGER NOT NULL, `depth` INTEGER NOT NULL, `position` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -43,6 +43,12 @@
             "columnName": "depth",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "position",
+            "columnName": "position",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -58,7 +64,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8e332c213018890a239f15ef1ec9834a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '04619801612ab9c3ae08089670c8d37b')"
     ]
   }
 }

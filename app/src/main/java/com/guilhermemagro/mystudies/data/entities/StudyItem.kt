@@ -14,6 +14,7 @@ data class StudyItem(
     val title: String,
     @ColumnInfo(name = "already_read") val alreadyRead: Boolean = false,
     val depth: Int = 0,
+    var position: Int = 0,
 ) {
     fun getPath() = parentPath + id + PATH_DIVIDER
 
